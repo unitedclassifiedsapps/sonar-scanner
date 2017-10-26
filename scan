@@ -1,0 +1,140 @@
+#!/bin/bash
+
+function print_help {
+    echo "Wrapper for sonar-scanner command
+Usage: scan [OPTION]
+    
+Available options
+    -u SONAR_URL
+    -t SONAR_TOKEN
+    -k SONAR_PROJECT_KEY
+    -v SONAR_PROJECT_VERSION
+    -s SONAR_SOURCES
+    -p SONAR_PROFILE
+    -l SONAR_LANGUAGE
+    -e SONAR_ENCODING
+    -b SONAR_BRANCH
+    -d enables debugging mode for sonar-scanner
+    -a SONAR_ADDITIONAL_PARAMETERS (any other parameter added to sonar-scanner command)"
+}
+
+# A POSIX variable
+OPTIND=1 # Reset in case getopts has been used previously in the shell.
+
+# Initialize our own variables:
+SONAR_URL=""
+SONAR_TOKEN=""
+SONAR_PROJECT_KEY=""
+SONAR_PROJECT_VERSION=""
+SONAR_SOURCES=""
+SONAR_PROFILE=""
+SONAR_LANGUAGE=""
+SONAR_ENCODING=""
+SONAR_BRANCH=""
+SONAR_ADDITIONAL_PARAMETERS=""
+SONAR_DEBUG=""
+
+while getopts ":u:t:k:v:s:p:l:e:b:a:dh" opt; do
+    case "$opt" in
+    u)
+        SONAR_URL=$OPTARG
+        ;;
+    t)
+        SONAR_URL=$OPTARG
+        ;;
+    k)
+        SONAR_PROJECT_KEY=$OPTARG
+        ;;
+    v)
+        SONAR_PROJECT_VERSION=$OPTARG
+        ;;
+    s)
+        SONAR_SOURCES=$OPTARG
+        ;;
+    p)
+        SONAR_PROFILE=$OPTARG
+        ;;
+    l)
+        SONAR_LANGUAGE=$OPTARG
+        ;;
+    e)
+        SONAR_ENCODING=$OPTARG
+        ;;
+    e)
+        SONAR_BRANCH=$OPTARG
+        ;;
+    a)
+        SONAR_ADDITIONAL_PARAMETERS=$OPTARG
+        ;;
+    d)
+        SONAR_DEBUG="1"
+        ;;
+    h)
+        print_help
+        exit 0
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
+if [ -z "$SONAR_URL" ]; then
+  print_help
+  exit 1
+fi
+
+COMMAND="sonar-scanner -Dsonar.host.url=$SONAR_URL"
+
+if [ ! -z "$SONAR_PROJECT_KEY" ]; then
+  COMMAND="$COMMAND -Dsonar.projectKey=$SONAR_PROJECT_KEY"
+fi
+
+if [ ! -z "$SONAR_TOKEN" ]; then
+  COMMAND="$COMMAND -Dsonar.login=$SONAR_TOKEN"
+fi
+
+if [ ! -z "$SONAR_PROJECT_VERSION" ]; then
+  COMMAND="$COMMAND -Dsonar.projectVersion=$SONAR_PROJECT_VERSION"
+fi
+
+if [ ! -z "$SONAR_SOURCES" ]; then
+  COMMAND="$COMMAND -Dsonar.sources=$SONAR_SOURCES"
+fi
+
+if [ ! -z "$SONAR_PROFILE" ]; then
+  COMMAND="$COMMAND -Dsonar.profile=$SONAR_PROFILE"
+fi
+
+if [ ! -z "$SONAR_LANGUAGE" ]; then
+  COMMAND="$COMMAND -Dsonar.language=$SONAR_LANGUAGE"
+fi
+
+if [ ! -z "$SONAR_ENCODING" ]; then
+  COMMAND="$COMMAND -Dsonar.sourceEncoding=$SONAR_ENCODING"
+fi
+
+if [ ! -z "$SONAR_BRANCH" ]; then
+  COMMAND="$COMMAND -Dsonar.branch=$SONAR_BRANCH"
+fi
+
+if [ ! -z "$SONAR_ADDITIONAL_PARAMETERS" ]; then
+  COMMAND="$COMMAND $SONAR_ADDITIONAL_PARAMETERS"
+fi
+
+if [ ! -z "$SONAR_DEBUG" ]; then
+  COMMAND="$COMMAND -X"
+fi
+
+# `analysis by default
+if [ ! -z $SONAR_ANALYSIS_MODE ]; then
+  COMMAND="$COMMAND -Dsonar.analysis.mode=$SONAR_ANALYSIS_MODE"
+  if [ $SONAR_ANALYSIS_MODE="preview" ]; then
+    COMMAND="$COMMAND -Dsonar.issuesReport.console.enable=true"
+  fi
+fi
+
+echo "Executing Command ${COMMAND}"
+
+$COMMAND
