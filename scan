@@ -40,7 +40,7 @@ while getopts ":u:t:k:v:s:p:l:e:b:a:dh" opt; do
         SONAR_URL=$OPTARG
         ;;
     t)
-        SONAR_URL=$OPTARG
+        SONAR_TOKEN=$OPTARG
         ;;
     k)
         SONAR_PROJECT_KEY=$OPTARG
