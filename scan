@@ -14,7 +14,7 @@ Available options
     -l SONAR_LANGUAGE
     -e SONAR_ENCODING
     -b SONAR_BRANCH
-    -d enables debugging mode for sonar-scanner
+    -d enables debugging mode
     -a SONAR_ADDITIONAL_PARAMETERS (any other parameter added to sonar-scanner command)"
 }
 
@@ -32,7 +32,7 @@ SONAR_LANGUAGE=""
 SONAR_ENCODING=""
 SONAR_BRANCH=""
 SONAR_ADDITIONAL_PARAMETERS=""
-SONAR_DEBUG=""
+DEBUG=""
 
 while getopts ":u:t:k:v:s:p:l:e:b:a:dh" opt; do
     case "$opt" in
@@ -67,7 +67,7 @@ while getopts ":u:t:k:v:s:p:l:e:b:a:dh" opt; do
         SONAR_ADDITIONAL_PARAMETERS=$OPTARG
         ;;
     d)
-        SONAR_DEBUG="1"
+        DEBUG="1"
         ;;
     h)
         print_help
@@ -81,6 +81,7 @@ shift $((OPTIND-1))
 [ "$1" = "--" ] && shift
 
 if [ -z "$SONAR_URL" ]; then
+  echo "Missing -u SONAR_URL"
   print_help
   exit 1
 fi
@@ -123,7 +124,7 @@ if [ ! -z "$SONAR_ADDITIONAL_PARAMETERS" ]; then
   COMMAND="$COMMAND $SONAR_ADDITIONAL_PARAMETERS"
 fi
 
-if [ ! -z "$SONAR_DEBUG" ]; then
+if [ ! -z "$DEBUG" ]; then
   COMMAND="$COMMAND -X"
 fi
 
@@ -135,6 +136,11 @@ if [ ! -z $SONAR_ANALYSIS_MODE ]; then
   fi
 fi
 
-echo "Executing Command ${COMMAND}"
+DUMP_COMMAND=$COMMAND
+if [ -z "$DEBUG" ]; then
+  DUMP_COMMAND="${DUMP_COMMAND/$SONAR_TOKEN/XXXXXXXX}"
+fi
+
+echo "Executing Command ${DUMP_COMMAND}"
 
 $COMMAND
