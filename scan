@@ -14,6 +14,7 @@ Available options
     -l SONAR_LANGUAGE
     -e SONAR_ENCODING
     -b SONAR_BRANCH
+    -m SONAR_ALAYSIS_MODE
     -d enables debugging mode
     -a SONAR_ADDITIONAL_PARAMETERS (any other parameter added to sonar-scanner command)"
 }
@@ -32,9 +33,10 @@ SONAR_LANGUAGE=""
 SONAR_ENCODING=""
 SONAR_BRANCH=""
 SONAR_ADDITIONAL_PARAMETERS=""
+SONAR_ALAYSIS_MODE=""
 DEBUG=""
 
-while getopts ":u:t:k:v:s:p:l:e:b:a:dh" opt; do
+while getopts ":u:t:k:v:s:p:l:e:b:m:a:dh" opt; do
     case "$opt" in
     u)
         SONAR_URL=$OPTARG
@@ -62,6 +64,9 @@ while getopts ":u:t:k:v:s:p:l:e:b:a:dh" opt; do
         ;;
     e)
         SONAR_BRANCH=$OPTARG
+        ;;
+    m)
+        SONAR_ANALYSIS_MODE=$OPTARG
         ;;
     a)
         SONAR_ADDITIONAL_PARAMETERS=$OPTARG
@@ -128,7 +133,6 @@ if [ ! -z "$DEBUG" ]; then
   COMMAND="$COMMAND -X"
 fi
 
-# `analysis by default
 if [ ! -z $SONAR_ANALYSIS_MODE ]; then
   COMMAND="$COMMAND -Dsonar.analysis.mode=$SONAR_ANALYSIS_MODE"
   if [ $SONAR_ANALYSIS_MODE="preview" ]; then

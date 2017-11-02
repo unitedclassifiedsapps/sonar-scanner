@@ -16,6 +16,7 @@ Available options
     -l SONAR_LANGUAGE
     -e SONAR_ENCODING
     -b SONAR_BRANCH
+    -m SONAR_ALAYSIS_MODE
     -d enables debugging mode
     -a SONAR_ADDITIONAL_PARAMETERS (any other parameter added to sonar-scanner command)"
 ```
