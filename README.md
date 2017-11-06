@@ -1,5 +1,5 @@
 # sonar-scanner
-This Docker image contains `sonar-scanner` and wrapper for it `scan`
+This Docker image contains `sonar-scanner` and wrapper for it `scan` . It also includes `git` for better version manipulations.
 
 ## Usage
 

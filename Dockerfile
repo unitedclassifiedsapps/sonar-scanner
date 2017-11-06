@@ -12,6 +12,7 @@ ENV PATH "$PATH:${HOME}/sonar-scanner/bin:${HOME}/sonarlint-cli/bin:${HOME}/bin"
 RUN apk update && apk add --no-cache \
     bash \
     unzip \
+    git \
     && rm -rf /tmp/* /var/tmp/*
 
 ADD https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip sonar-scanner.zip
